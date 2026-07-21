@@ -12,11 +12,11 @@ import { cn } from '@/lib/utils'
 import type { WorkflowStep, WorkflowStepStatus, WorkflowCategory } from '@/types'
 
 const CATEGORY_COLORS: Record<WorkflowCategory, string> = {
-  orientation: 'bg-blue-100 text-blue-700',
-  compliance:  'bg-red-100 text-red-700',
-  'it-setup':  'bg-purple-100 text-purple-700',
-  training:    'bg-yellow-100 text-yellow-700',
-  social:      'bg-green-100 text-green-700',
+  orientation: 'bg-blue-600 text-white',
+  compliance:  'bg-rose-600 text-white',
+  'it-setup':  'bg-violet-600 text-white',
+  training:    'bg-amber-500 text-white',
+  social:      'bg-emerald-600 text-white',
 }
 
 const STATUS_STYLES: Record<WorkflowStepStatus, { dot: string; label: string }> = {
@@ -28,38 +28,55 @@ const STATUS_STYLES: Record<WorkflowStepStatus, { dot: string; label: string }> 
 
 interface WorkflowTimelineProps {
   steps: WorkflowStep[]
+  actionedCount: number
   onStatusChange: (stepIndex: number, status: WorkflowStepStatus) => void
 }
 
-export default function WorkflowTimeline({ steps, onStatusChange }: WorkflowTimelineProps) {
+export default function WorkflowTimeline({ steps, actionedCount, onStatusChange }: WorkflowTimelineProps) {
   if (steps.length === 0) return null
 
-  return (
-    <div className="relative">
-      {/* Vertical line */}
-      <div className="absolute left-5 top-6 bottom-6 w-0.5 bg-slate-200" />
+  const progress = Math.round((actionedCount / steps.length) * 100)
 
-      <ol className="space-y-4">
-        {steps.map((step, i) => (
-          <WorkflowStepCard
-            key={step.step}
-            step={step}
-            isLast={i === steps.length - 1}
-            onStatusChange={(status) => onStatusChange(i, status)}
+  return (
+    <div className="space-y-4">
+      {/* Mini progress bar + counter above the list */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between text-xs text-slate-500">
+          <span className="font-medium text-slate-700">Steps progress</span>
+          <span>{actionedCount} of {steps.length} steps actioned</span>
+        </div>
+        <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+          <div
+            className="h-full rounded-full bg-ibm-500 transition-all duration-500"
+            style={{ width: `${progress}%` }}
           />
-        ))}
-      </ol>
+        </div>
+      </div>
+
+      {/* Timeline list */}
+      <div className="relative">
+        {/* Vertical line */}
+        <div className="absolute left-5 top-6 bottom-6 w-0.5 bg-slate-200" />
+
+        <ol className="space-y-4">
+          {steps.map((step, i) => (
+            <WorkflowStepCard
+              key={step.step}
+              step={step}
+              onStatusChange={(status) => onStatusChange(i, status)}
+            />
+          ))}
+        </ol>
+      </div>
     </div>
   )
 }
 
 function WorkflowStepCard({
   step,
-  isLast,
   onStatusChange,
 }: {
   step: WorkflowStep
-  isLast: boolean
   onStatusChange: (status: WorkflowStepStatus) => void
 }) {
   const [expanded, setExpanded] = useState(true)
@@ -106,7 +123,7 @@ function WorkflowStepCard({
                   <span
                     className={cn(
                       'rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
-                      CATEGORY_COLORS[step.category] ?? 'bg-slate-100 text-slate-600',
+                      CATEGORY_COLORS[step.category] ?? 'bg-slate-600 text-white',
                     )}
                   >
                     {step.category}

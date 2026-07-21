@@ -1,8 +1,9 @@
-import { useState } from 'react'
-import { GitBranch, Loader2, RefreshCw, AlertCircle, Users } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { GitBranch, Loader2, RefreshCw, AlertCircle, Users, AlertTriangle } from 'lucide-react'
 import WorkflowTimeline from '@/components/WorkflowTimeline'
-import { generateWorkflow } from '@/services/api'
-import type { WorkflowStep, WorkflowStepStatus } from '@/types'
+import WorkflowExportButton from '@/components/WorkflowExportButton'
+import { useWorkflow } from '@/hooks/useWorkflow'
 import { cn } from '@/lib/utils'
 
 const ROLES = [
@@ -29,46 +30,44 @@ const DEPARTMENTS = [
 export default function WorkflowPage() {
   const [role, setRole] = useState('New Employee')
   const [department, setDepartment] = useState('')
-  const [steps, setSteps] = useState<WorkflowStep[]>([])
-  const [workflowRole, setWorkflowRole] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [hasDocuments, setHasDocuments] = useState(true)
+  const { steps, role: workflowRole, loading, error, generate, updateStatus } = useWorkflow()
 
-  const handleGenerate = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await generateWorkflow({
-        role: role.toLowerCase(),
-        department: department || undefined,
-      })
-      // Attach frontend-only status field
-      const stepsWithStatus: WorkflowStep[] = res.steps.map((s) => ({
-        ...s,
-        status: 'pending' as WorkflowStepStatus,
-      }))
-      setSteps(stepsWithStatus)
-      setWorkflowRole(res.role)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate workflow.')
-    } finally {
-      setLoading(false)
+  // Auto-generate on mount with the default role
+  useEffect(() => {
+    generate(role, department || undefined).catch(() => {
+      // If the initial generate fails with a "no docs" style error, surface the banner
+      setHasDocuments(false)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Detect "no documents" condition from error message
+  useEffect(() => {
+    if (error) {
+      const lower = error.toLowerCase()
+      if (
+        lower.includes('no document') ||
+        lower.includes('not found') ||
+        lower.includes('empty') ||
+        lower.includes('no data')
+      ) {
+        setHasDocuments(false)
+      }
     }
-  }
+  }, [error])
 
-  const handleStatusChange = (index: number, status: WorkflowStepStatus) => {
-    setSteps((prev) =>
-      prev.map((s, i) => (i === index ? { ...s, status } : s)),
-    )
+  const handleGenerate = () => {
+    setHasDocuments(true)
+    generate(role, department || undefined)
   }
 
   const approvedCount = steps.filter((s) => s.status === 'approved').length
   const completedCount = steps.filter((s) => s.status === 'completed').length
   const rejectedCount = steps.filter((s) => s.status === 'rejected').length
+  const actionedCount = approvedCount + completedCount
   const progress =
-    steps.length > 0
-      ? Math.round(((approvedCount + completedCount) / steps.length) * 100)
-      : 0
+    steps.length > 0 ? Math.round((actionedCount / steps.length) * 100) : 0
 
   return (
     <div className="px-8 py-8 max-w-3xl mx-auto space-y-6">
@@ -83,6 +82,19 @@ export default function WorkflowPage() {
           Review and approve each step.
         </p>
       </div>
+
+      {/* Warning banner — shown when no documents are ingested */}
+      {!hasDocuments && (
+        <div className="flex items-start gap-3 rounded-lg border border-yellow-300 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
+          <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-yellow-500" />
+          <span>
+            No HR documents have been ingested yet. Workflow quality will be limited.{' '}
+            <Link to="/upload" className="font-semibold underline hover:text-yellow-900">
+              Upload documents →
+            </Link>
+          </span>
+        </div>
+      )}
 
       {/* Generator controls */}
       <div className="rounded-xl bg-white border border-slate-200 shadow-sm p-5 space-y-4">
@@ -119,22 +131,28 @@ export default function WorkflowPage() {
           </div>
         </div>
 
-        <button
-          onClick={handleGenerate}
-          disabled={loading}
-          className={cn(
-            'flex w-full items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold text-white transition-colors',
-            loading ? 'bg-ibm-300 cursor-not-allowed' : 'bg-ibm-500 hover:bg-ibm-600',
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleGenerate}
+            disabled={loading}
+            className={cn(
+              'flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold text-white transition-colors',
+              loading ? 'bg-ibm-300 cursor-not-allowed' : 'bg-ibm-500 hover:bg-ibm-600',
+            )}
+          >
+            {loading ? (
+              <><Loader2 className="h-4 w-4 animate-spin" /> Generating workflow…</>
+            ) : steps.length > 0 ? (
+              <><RefreshCw className="h-4 w-4" /> Regenerate Workflow</>
+            ) : (
+              <><GitBranch className="h-4 w-4" /> Generate Workflow</>
+            )}
+          </button>
+
+          {steps.length > 0 && !loading && (
+            <WorkflowExportButton role={workflowRole} steps={steps} />
           )}
-        >
-          {loading ? (
-            <><Loader2 className="h-4 w-4 animate-spin" /> Generating workflow…</>
-          ) : steps.length > 0 ? (
-            <><RefreshCw className="h-4 w-4" /> Regenerate Workflow</>
-          ) : (
-            <><GitBranch className="h-4 w-4" /> Generate Workflow</>
-          )}
-        </button>
+        </div>
       </div>
 
       {/* Error */}
@@ -187,10 +205,14 @@ export default function WorkflowPage() {
 
       {/* Timeline */}
       {steps.length > 0 && (
-        <WorkflowTimeline steps={steps} onStatusChange={handleStatusChange} />
+        <WorkflowTimeline
+          steps={steps}
+          actionedCount={actionedCount}
+          onStatusChange={updateStatus}
+        />
       )}
 
-      {/* Empty state */}
+      {/* Empty state — only show if not loading and no error */}
       {steps.length === 0 && !loading && !error && (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 py-16 text-center">
           <GitBranch className="h-10 w-10 text-slate-300 mb-3" />
