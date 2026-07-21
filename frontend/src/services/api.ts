@@ -9,6 +9,7 @@ import type {
   ChatResponse,
   WorkflowRequest,
   WorkflowResponse,
+  DocumentListResponse,
 } from '@/types';
 
 const BASE_URL = '/api';
@@ -27,6 +28,16 @@ export async function uploadDocuments(files: File[]): Promise<UploadResponse[]> 
   const form = new FormData();
   files.forEach((f) => form.append('files', f));
   const res = await fetch(`${BASE_URL}/upload`, { method: 'POST', body: form });
+  return handleResponse<UploadResponse[]>(res);
+}
+
+export async function listDocuments(): Promise<DocumentListResponse> {
+  const res = await fetch(`${BASE_URL}/documents`);
+  return handleResponse<DocumentListResponse>(res);
+}
+
+export async function seedDocuments(): Promise<UploadResponse[]> {
+  const res = await fetch(`${BASE_URL}/seed`, { method: 'POST' });
   return handleResponse<UploadResponse[]>(res);
 }
 

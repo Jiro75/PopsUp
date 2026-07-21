@@ -1,7 +1,44 @@
-import { FileText } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { FileText, RefreshCw, FolderOpen } from 'lucide-react'
 import FileUploadArea from '@/components/FileUploadArea'
+import { listDocuments, seedDocuments } from '@/services/api'
 
 export default function UploadPage() {
+  const [documents, setDocuments] = useState<string[]>([])
+  const [loadingDocs, setLoadingDocs] = useState(false)
+  const [seeding, setSeeding] = useState(false)
+  const [seedMsg, setSeedMsg] = useState('')
+
+  const fetchDocs = async () => {
+    setLoadingDocs(true)
+    try {
+      const res = await listDocuments()
+      setDocuments(res.documents)
+    } catch {
+      // backend may not be running — silently ignore
+    } finally {
+      setLoadingDocs(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchDocs()
+  }, [])
+
+  const handleSeed = async () => {
+    setSeeding(true)
+    setSeedMsg('')
+    try {
+      const res = await seedDocuments()
+      setSeedMsg(`Loaded ${res.length} sample document(s).`)
+      fetchDocs()
+    } catch {
+      setSeedMsg('Could not load sample — is the backend running?')
+    } finally {
+      setSeeding(false)
+    }
+  }
+
   return (
     <div className="px-8 py-8 max-w-2xl mx-auto space-y-6">
       {/* Page header */}
@@ -19,6 +56,64 @@ export default function UploadPage() {
       {/* Upload area card */}
       <div className="rounded-xl bg-white border border-slate-200 shadow-sm p-6">
         <FileUploadArea />
+      </div>
+
+      {/* Ingested documents list */}
+      <div className="rounded-xl bg-white border border-slate-200 shadow-sm p-5 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FolderOpen className="h-4 w-4 text-ibm-500" />
+            <p className="text-sm font-semibold text-slate-800">Ingested Documents</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleSeed}
+              disabled={seeding}
+              className="flex items-center gap-1.5 rounded-lg border border-ibm-200 bg-ibm-50 px-3 py-1.5 text-xs text-ibm-700 hover:bg-ibm-100 transition-colors disabled:opacity-50"
+            >
+              {seeding ? (
+                <RefreshCw className="h-3 w-3 animate-spin" />
+              ) : (
+                <RefreshCw className="h-3 w-3" />
+              )}
+              Load Sample Doc
+            </button>
+            <button
+              onClick={fetchDocs}
+              disabled={loadingDocs}
+              className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-50"
+            >
+              <RefreshCw className={`h-3 w-3 ${loadingDocs ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        {seedMsg && (
+          <p className="text-xs text-ibm-600 bg-ibm-50 border border-ibm-100 rounded px-3 py-1.5">
+            {seedMsg}
+          </p>
+        )}
+
+        {loadingDocs ? (
+          <p className="text-xs text-slate-400">Loading…</p>
+        ) : documents.length === 0 ? (
+          <p className="text-xs text-slate-400 italic">
+            No documents ingested yet. Upload a file above or click "Load Sample Doc".
+          </p>
+        ) : (
+          <ul className="space-y-1">
+            {documents.map((name) => (
+              <li
+                key={name}
+                className="flex items-center gap-2 rounded-lg bg-slate-50 border border-slate-100 px-3 py-2 text-xs text-slate-700"
+              >
+                <FileText className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                {name}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {/* Pipeline info */}

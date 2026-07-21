@@ -6,6 +6,10 @@ export interface UploadResponse {
   message: string;
 }
 
+export interface DocumentListResponse {
+  documents: string[];
+}
+
 // ── Chat ──────────────────────────────────────────────────────────────────────
 
 export interface ChatMessage {

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Send, Loader2, Bot, User, ChevronDown } from 'lucide-react'
+import { Send, Loader2, Bot, User, ChevronDown, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { sendChatMessage } from '@/services/api'
 import type { ChatMessage } from '@/types'
@@ -7,19 +7,33 @@ import type { ChatMessage } from '@/types'
 let msgCounter = 0
 const uid = () => `msg-${++msgCounter}`
 
-export default function ChatWindow() {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: uid(),
-      role: 'assistant',
-      content:
-        'Hello! I\'m your AI HR onboarding assistant. Upload HR documents first, then ask me anything about onboarding policies, procedures, or best practices.',
-      timestamp: new Date(),
-    },
-  ])
+const makeWelcomeMsg = (): ChatMessage => ({
+  id: uid(),
+  role: 'assistant',
+  content: '__welcome__',
+  timestamp: new Date(),
+})
+
+interface Props {
+  prefilledInput?: string
+  onPrefilledConsumed?: () => void
+}
+
+export default function ChatWindow({ prefilledInput, onPrefilledConsumed }: Props) {
+  const [messages, setMessages] = useState<ChatMessage[]>([makeWelcomeMsg()])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // When a suggested question is clicked, prefill the input and focus textarea
+  useEffect(() => {
+    if (prefilledInput) {
+      setInput(prefilledInput)
+      onPrefilledConsumed?.()
+      textareaRef.current?.focus()
+    }
+  }, [prefilledInput, onPrefilledConsumed])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -71,15 +85,27 @@ export default function ChatWindow() {
     }
   }
 
+  const clearChat = () => setMessages([makeWelcomeMsg()])
+
   return (
     <div className="flex flex-col h-full rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-slate-200 px-5 py-3.5 bg-ibm-900">
-        <Bot className="h-5 w-5 text-ibm-300" />
-        <div>
-          <p className="text-sm font-semibold text-white">HR Onboarding Assistant</p>
-          <p className="text-xs text-ibm-300">Powered by IBM watsonx.ai + RAG</p>
+      <div className="flex items-center justify-between border-b border-slate-200 px-5 py-3.5 bg-ibm-900">
+        <div className="flex items-center gap-3">
+          <Bot className="h-5 w-5 text-ibm-300" />
+          <div>
+            <p className="text-sm font-semibold text-white">HR Onboarding Assistant</p>
+            <p className="text-xs text-ibm-300">Powered by IBM watsonx.ai + RAG</p>
+          </div>
         </div>
+        <button
+          onClick={clearChat}
+          title="Clear chat"
+          className="flex items-center gap-1.5 text-xs text-ibm-300 hover:text-white transition-colors"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+          Clear
+        </button>
       </div>
 
       {/* Messages */}
@@ -100,6 +126,7 @@ export default function ChatWindow() {
       <div className="border-t border-slate-200 px-4 py-3 bg-slate-50">
         <div className="flex items-end gap-2">
           <textarea
+            ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={onKeyDown}
@@ -126,9 +153,28 @@ export default function ChatWindow() {
   )
 }
 
+/** Render a simple welcome card instead of a plain text bubble */
+function WelcomeBubble() {
+  return (
+    <div className="rounded-xl bg-slate-100 text-slate-800 rounded-tl-sm px-4 py-3 text-sm leading-relaxed space-y-2 animate-fade-in">
+      <p className="font-semibold">👋 Welcome! I'm your AI HR Onboarding Assistant</p>
+      <p className="text-xs text-slate-500">Powered by IBM watsonx.ai + RAG</p>
+      <p className="text-xs text-slate-600 mt-1">Here's what I can help you with:</p>
+      <ul className="text-xs text-slate-700 space-y-1 pl-1">
+        <li><span className="font-medium">Onboarding policies</span> — first-day checklists, orientation schedules</li>
+        <li><span className="font-medium">IT &amp; access</span> — equipment requests, system provisioning</li>
+        <li><span className="font-medium">Benefits &amp; payroll</span> — leave policies, compensation questions</li>
+        <li><span className="font-medium">Compliance &amp; training</span> — mandatory courses, code of conduct</li>
+      </ul>
+      <p className="text-xs text-slate-500 pt-1">Upload an HR document on the Upload page, then ask anything — or pick a suggested question above.</p>
+    </div>
+  )
+}
+
 function MessageBubble({ message }: { message: ChatMessage }) {
   const [showSources, setShowSources] = useState(false)
   const isUser = message.role === 'user'
+  const isWelcome = message.content === '__welcome__'
 
   return (
     <div className={cn('flex gap-3', isUser ? 'flex-row-reverse' : 'flex-row')}>
@@ -144,6 +190,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
 
       {/* Bubble */}
       <div className={cn('max-w-[75%] space-y-1', isUser ? 'items-end' : 'items-start')}>
+        {isWelcome ? <WelcomeBubble /> : (
         <div
           className={cn(
             'rounded-xl px-4 py-2.5 text-sm leading-relaxed animate-fade-in',
@@ -154,9 +201,10 @@ function MessageBubble({ message }: { message: ChatMessage }) {
         >
           {message.content}
         </div>
+        )}
 
-        {/* Sources toggle */}
-        {!isUser && message.sources && message.sources.length > 0 && (
+        {/* Sources toggle — not shown for welcome message */}
+        {!isUser && !isWelcome && message.sources && message.sources.length > 0 && (
           <div className="pl-1">
             <button
               onClick={() => setShowSources((v) => !v)}
@@ -183,9 +231,11 @@ function MessageBubble({ message }: { message: ChatMessage }) {
           </div>
         )}
 
-        <p className="text-xs text-slate-400 px-1">
-          {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-        </p>
+        {!isWelcome && (
+          <p className="text-xs text-slate-400 px-1">
+            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </p>
+        )}
       </div>
     </div>
   )
