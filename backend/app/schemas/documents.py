@@ -37,3 +37,19 @@ class WorkflowStep(BaseModel):
 class WorkflowResponse(BaseModel):
     role: str
     steps: list[WorkflowStep]
+
+
+class DocumentListResponse(BaseModel):
+    filenames: list[str]
+    count: int
+
+
+class DeleteDocumentsResponse(BaseModel):
+    deleted: bool
+    message: str
+
+
+class SeedResponse(BaseModel):
+    filename: str
+    chunks_stored: int
+    message: str
