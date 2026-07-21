@@ -6,6 +6,13 @@ export interface UploadResponse {
   message: string;
 }
 
+/** A single document entry as returned by GET /documents. */
+export interface DocumentListItem {
+  filename: string;
+  chunks: number;
+  uploaded_at?: string;
+}
+
 // ── Chat ──────────────────────────────────────────────────────────────────────
 
 export interface ChatMessage {

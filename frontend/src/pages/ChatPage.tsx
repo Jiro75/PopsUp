@@ -1,7 +1,11 @@
-import ChatWindow from '@/components/ChatWindow'
+import { useState } from 'react'
 import { MessageSquare } from 'lucide-react'
+import ChatWindow from '@/components/ChatWindow'
+import SuggestedQuestions from '@/components/SuggestedQuestions'
 
 export default function ChatPage() {
+  const [prefill, setPrefill] = useState('')
+
   return (
     <div className="flex flex-col h-full px-8 py-8 max-w-3xl mx-auto gap-4">
       {/* Page header */}
@@ -16,9 +20,14 @@ export default function ChatPage() {
         </p>
       </div>
 
+      {/* Suggested questions */}
+      <div className="shrink-0">
+        <SuggestedQuestions onSelect={setPrefill} />
+      </div>
+
       {/* Chat window fills remaining height */}
       <div className="flex-1 min-h-0">
-        <ChatWindow />
+        <ChatWindow prefillMessage={prefill} />
       </div>
     </div>
   )

@@ -1,5 +1,19 @@
 import { Link } from 'react-router-dom'
-import { Upload, MessageSquare, GitBranch, ArrowRight, FileText, Zap, Shield } from 'lucide-react'
+import {
+  Upload,
+  MessageSquare,
+  GitBranch,
+  ArrowRight,
+  Zap,
+  Shield,
+  Brain,
+  FileSearch,
+  Users,
+  CheckCircle2,
+} from 'lucide-react'
+import StatusBadge from '@/components/StatusBadge'
+
+// ── Static data ───────────────────────────────────────────────────────────────
 
 const features = [
   {
@@ -32,16 +46,42 @@ const features = [
 ]
 
 const stats = [
-  { label: 'Pipeline Stages', value: '5', sub: 'Upload → Parse → Chunk → Embed → Store' },
-  { label: 'AI Provider', value: 'watsonx', sub: 'IBM Granite (swappable)' },
-  { label: 'Vector DB', value: 'Qdrant', sub: 'Cosine similarity search' },
-  { label: 'Integrations', value: '5 mock', sub: 'Workday, Outlook, AD, Slack, Jira' },
+  { label: 'Pipeline Stages', value: '5',       sub: 'Upload → Parse → Chunk → Embed → Store' },
+  { label: 'AI Provider',     value: 'watsonx',  sub: 'IBM Granite (swappable)' },
+  { label: 'Vector DB',       value: 'Qdrant',   sub: 'Cosine similarity search' },
+  { label: 'Integrations',    value: '5 mock',   sub: 'Workday, Outlook, AD, Slack, Jira' },
 ]
+
+const whyPoints = [
+  {
+    icon: Users,
+    heading: 'The Problem',
+    body: 'HR teams spend days manually guiding new hires through onboarding paperwork, IT setup, and compliance training. Policy documents exist but are buried in inboxes and shared drives — impossible to query.',
+  },
+  {
+    icon: Brain,
+    heading: 'The AI Solution',
+    body: 'PopsUp ingests every HR document into a vector database. Employees ask plain-English questions and get instant, document-grounded answers. Managers generate a full onboarding checklist in seconds — tailored by role and department.',
+  },
+  {
+    icon: FileSearch,
+    heading: 'RAG + IBM Granite',
+    body: 'Retrieval-Augmented Generation ensures every answer cites your actual policies — not hallucinated boilerplate. The IBM watsonx.ai Granite model keeps all data inside IBM Cloud, meeting enterprise compliance requirements.',
+  },
+  {
+    icon: CheckCircle2,
+    heading: 'Approval Workflow',
+    body: 'Generated onboarding steps can be individually approved, rejected, or marked complete. The system integrates with Workday, Outlook, Slack, Jira, and Active Directory to trigger real actions at each milestone.',
+  },
+]
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
   return (
     <div className="px-8 py-8 max-w-5xl mx-auto space-y-10">
-      {/* Hero */}
+
+      {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <div className="rounded-2xl bg-ibm-900 px-8 py-10 text-white">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
@@ -83,7 +123,15 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Stats */}
+      {/* ── Live system status ───────────────────────────────────────────── */}
+      <div className="space-y-2">
+        <h2 className="text-sm font-semibold text-slate-600 uppercase tracking-wide">
+          Live System Status
+        </h2>
+        <StatusBadge />
+      </div>
+
+      {/* ── Stats ────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {stats.map((s) => (
           <div key={s.label} className="rounded-xl bg-white border border-slate-200 p-4 shadow-sm">
@@ -94,7 +142,7 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Feature cards */}
+      {/* ── Feature cards ────────────────────────────────────────────────── */}
       <div>
         <h2 className="text-lg font-semibold text-slate-800 mb-4">Core Features</h2>
         <div className="grid md:grid-cols-3 gap-4">
@@ -117,7 +165,30 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Architecture note */}
+      {/* ── Why This Project? (pitch for judges) ─────────────────────────── */}
+      <div className="rounded-xl border border-ibm-100 bg-ibm-50 p-6 space-y-5">
+        <div>
+          <h2 className="text-base font-bold text-ibm-800">Why This Project?</h2>
+          <p className="text-xs text-ibm-600 mt-0.5">
+            Built for the IBM Hackathon — solving a real enterprise pain point with IBM watsonx.ai
+          </p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {whyPoints.map(({ icon: Icon, heading, body }) => (
+            <div key={heading} className="flex gap-3">
+              <div className="shrink-0 mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg bg-ibm-100">
+                <Icon className="h-4 w-4 text-ibm-600" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-ibm-800">{heading}</p>
+                <p className="mt-1 text-xs text-ibm-700 leading-relaxed">{body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Architecture note ─────────────────────────────────────────────── */}
       <div className="rounded-xl bg-slate-50 border border-slate-200 p-5">
         <h2 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
           <Zap className="h-4 w-4 text-ibm-500" /> Architecture
@@ -146,6 +217,7 @@ export default function HomePage() {
           enable real AI responses.
         </p>
       </div>
+
     </div>
   )
 }

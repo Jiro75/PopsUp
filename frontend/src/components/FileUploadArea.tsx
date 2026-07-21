@@ -6,7 +6,11 @@ import type { UploadResponse } from '@/types'
 
 const ACCEPTED = ['.pdf', '.docx', '.doc']
 
-export default function FileUploadArea() {
+interface FileUploadAreaProps {
+  onUploadComplete?: () => void
+}
+
+export default function FileUploadArea({ onUploadComplete }: FileUploadAreaProps = {}) {
   const [dragging, setDragging] = useState(false)
   const [files, setFiles] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
@@ -43,6 +47,7 @@ export default function FileUploadArea() {
       const data = await uploadDocuments(files)
       setResults(data)
       setFiles([])
+      onUploadComplete?.()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed.')
     } finally {

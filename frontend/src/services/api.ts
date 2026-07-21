@@ -9,6 +9,7 @@ import type {
   ChatResponse,
   WorkflowRequest,
   WorkflowResponse,
+  DocumentListItem,
 } from '@/types';
 
 const BASE_URL = '/api';
@@ -52,6 +53,23 @@ export async function generateWorkflow(
     body: JSON.stringify(payload),
   });
   return handleResponse<WorkflowResponse>(res);
+}
+
+// ── Documents ─────────────────────────────────────────────────────────────────
+
+/** List all documents that have been ingested into the vector store. */
+export async function listDocuments(): Promise<DocumentListItem[]> {
+  const res = await fetch(`${BASE_URL}/documents`);
+  return handleResponse<DocumentListItem[]>(res);
+}
+
+/**
+ * Seed the system with built-in sample HR documents so the demo can run
+ * without a manual upload step.
+ */
+export async function seedDocuments(): Promise<{ seeded: number; message: string }> {
+  const res = await fetch(`${BASE_URL}/seed`, { method: 'POST' });
+  return handleResponse<{ seeded: number; message: string }>(res);
 }
 
 // ── Health ────────────────────────────────────────────────────────────────────

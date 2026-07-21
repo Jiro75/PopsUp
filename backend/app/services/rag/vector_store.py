@@ -7,6 +7,14 @@ codebase never imports the Qdrant client directly.
 
 Raises ImportError / ConnectionError gracefully when Qdrant is not
 available so the app still starts in demo mode.
+
+Public API summary
+------------------
+ensure_collection()          – create collection if absent
+upsert_chunks(chunks)        – embed + store document chunks
+search(query_vector, top_k)  – nearest-neighbour retrieval
+list_sources()               – deduplicated list of ingested filenames
+clear_collection()           – drop + recreate collection (demo reset)
 """
 
 import uuid
@@ -108,3 +116,78 @@ def search(query_vector: list[float], top_k: int = 5) -> list[DocumentChunk]:
         chunks.append(chunk)
 
     return chunks
+
+
+def list_document_filenames() -> list[str]:
+    """Return a deduplicated list of ingested source filenames. Returns [] if Qdrant unavailable."""
+    if not _QDRANT_AVAILABLE:
+        return []
+    try:
+        settings = get_settings()
+        client = _get_client()
+        existing = [c.name for c in client.get_collections().collections]
+        if settings.qdrant_collection not in existing:
+            return []
+
+        filenames: set[str] = set()
+        offset = None
+        while True:
+            records, offset = client.scroll(
+                collection_name=settings.qdrant_collection,
+                scroll_filter=None,
+                limit=100,
+                offset=offset,
+                with_payload=["source_filename"],
+                with_vectors=False,
+            )
+            for record in records:
+                name = (record.payload or {}).get("source_filename")
+                if name:
+                    filenames.add(name)
+            if offset is None:
+                break
+        return sorted(filenames)
+    except Exception as exc:
+        logger.warning("list_document_filenames failed (%s).", exc)
+        return []
+
+
+def delete_all_documents() -> bool:
+    """Drop and recreate the Qdrant collection, clearing all stored documents.
+    Returns True on success, False if Qdrant is unavailable."""
+    if not _QDRANT_AVAILABLE:
+        logger.warning("Qdrant not available — delete_all_documents is a no-op.")
+        return False
+    try:
+        settings = get_settings()
+        client = _get_client()
+        existing = [c.name for c in client.get_collections().collections]
+        if settings.qdrant_collection in existing:
+            client.delete_collection(settings.qdrant_collection)
+            logger.info("Deleted Qdrant collection: %s", settings.qdrant_collection)
+        ensure_collection()
+        return True
+    except Exception as exc:
+        logger.error("delete_all_documents failed (%s).", exc)
+        return False
+
+
+def list_sources() -> list[str]:
+    """
+    Return a deduplicated, sorted list of source filenames currently
+    stored in the collection.
+
+    Delegates to :func:`list_document_filenames`.
+    Returns ``[]`` when Qdrant is unavailable (demo mode).
+    """
+    return list_document_filenames()
+
+
+def clear_collection() -> bool:
+    """
+    Drop and recreate the Qdrant collection, removing every stored chunk.
+
+    Delegates to :func:`delete_all_documents`.
+    Returns ``True`` on success, ``False`` when Qdrant is unavailable.
+    """
+    return delete_all_documents()

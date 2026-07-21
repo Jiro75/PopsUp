@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Send, Loader2, Bot, User, ChevronDown } from 'lucide-react'
+import { Send, Loader2, Bot, User, ChevronDown, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { sendChatMessage } from '@/services/api'
 import type { ChatMessage } from '@/types'
@@ -7,19 +7,37 @@ import type { ChatMessage } from '@/types'
 let msgCounter = 0
 const uid = () => `msg-${++msgCounter}`
 
-export default function ChatWindow() {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: uid(),
-      role: 'assistant',
-      content:
-        'Hello! I\'m your AI HR onboarding assistant. Upload HR documents first, then ask me anything about onboarding policies, procedures, or best practices.',
-      timestamp: new Date(),
-    },
-  ])
+const WELCOME_MESSAGE = `👋 Welcome! I'm your AI HR onboarding assistant powered by IBM watsonx.ai.
+
+I can answer questions about:
+• Onboarding steps and timelines
+• Company policies and compliance
+• IT setup and account provisioning
+• Benefits, PTO, and HR procedures
+
+Try one of the suggested questions, or ask me anything!`
+
+const initialMessage = (): ChatMessage => ({
+  id: uid(),
+  role: 'assistant',
+  content: WELCOME_MESSAGE,
+  timestamp: new Date(),
+})
+
+interface ChatWindowProps {
+  prefillMessage?: string
+}
+
+export default function ChatWindow({ prefillMessage }: ChatWindowProps) {
+  const [messages, setMessages] = useState<ChatMessage[]>([initialMessage()])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+
+  // Pre-fill input when a suggested question is clicked
+  useEffect(() => {
+    if (prefillMessage) setInput(prefillMessage)
+  }, [prefillMessage])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -71,15 +89,24 @@ export default function ChatWindow() {
     }
   }
 
+  const clearChat = () => setMessages([initialMessage()])
+
   return (
     <div className="flex flex-col h-full rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-slate-200 px-5 py-3.5 bg-ibm-900">
         <Bot className="h-5 w-5 text-ibm-300" />
-        <div>
+        <div className="flex-1">
           <p className="text-sm font-semibold text-white">HR Onboarding Assistant</p>
           <p className="text-xs text-ibm-300">Powered by IBM watsonx.ai + RAG</p>
         </div>
+        <button
+          onClick={clearChat}
+          title="Clear chat"
+          className="text-ibm-400 hover:text-white transition-colors p-1 rounded"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
       </div>
 
       {/* Messages */}
