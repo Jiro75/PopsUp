@@ -134,48 +134,77 @@ class AIProvider:
 
     # ── Mock responses (demo mode) ────────────────────────────────────────────
 
+    # Role-specific mock workflows used when watsonx is not connected.
+    _MOCK_WORKFLOWS: dict = {
+        "software engineer": [
+            {"step":1,"title":"Complete HR & Legal Paperwork","description":"Sign employment contract, NDA, and IP assignment agreement with the HR team.","estimated_duration":"2 hours","category":"compliance"},
+            {"step":2,"title":"Dev Environment Setup","description":"Install IDE, clone repositories, set up SSH keys, and configure local dev environment with the engineering guide.","estimated_duration":"1 day","category":"it-setup"},
+            {"step":3,"title":"Codebase & Architecture Walkthrough","description":"Attend a 2-hour session with your tech lead to understand the system architecture, coding standards, and branching strategy.","estimated_duration":"2 hours","category":"training"},
+            {"step":4,"title":"Complete Security & SDLC Training","description":"Finish the mandatory secure coding practices and software development lifecycle compliance course on the LMS.","estimated_duration":"3 hours","category":"compliance"},
+            {"step":5,"title":"First Ticket — Starter Task","description":"Pick up a pre-selected onboarding ticket from the backlog. Pair with a senior engineer for your first PR review.","estimated_duration":"2 days","category":"training"},
+            {"step":6,"title":"Meet the Engineering Team","description":"Join the team standup, attend sprint planning, and schedule 1-on-1s with your manager and two team members.","estimated_duration":"Half day","category":"social"},
+        ],
+        "data scientist": [
+            {"step":1,"title":"HR Paperwork & Data Privacy Agreement","description":"Sign employment contract, NDA, and mandatory data privacy / GDPR compliance agreement.","estimated_duration":"2 hours","category":"compliance"},
+            {"step":2,"title":"Data Access & Tool Provisioning","description":"Request access to data warehouse, ML platform (MLflow/SageMaker), Jupyter environment, and relevant datasets.","estimated_duration":"1 day","category":"it-setup"},
+            {"step":3,"title":"Data Governance & Ethics Training","description":"Complete the mandatory data ethics, bias awareness, and responsible AI usage training on the LMS portal.","estimated_duration":"4 hours","category":"compliance"},
+            {"step":4,"title":"Explore Existing Models & Datasets","description":"Review the model registry, existing notebooks, and data documentation to understand current ML assets.","estimated_duration":"1 day","category":"training"},
+            {"step":5,"title":"Shadow a Data Pipeline Run","description":"Observe a full data pipeline execution end-to-end with a senior data scientist to understand data flows.","estimated_duration":"Half day","category":"training"},
+            {"step":6,"title":"Meet Stakeholders & Data Owners","description":"Schedule introductions with product managers, data engineers, and business stakeholders who own your key datasets.","estimated_duration":"Half day","category":"social"},
+        ],
+        "hr specialist": [
+            {"step":1,"title":"Complete Employment Documentation","description":"Submit signed employment contract, tax forms, and benefits enrollment forms to the HR operations team.","estimated_duration":"2 hours","category":"compliance"},
+            {"step":2,"title":"HRIS System Access & Training","description":"Get provisioned in Workday/SAP HR and complete the mandatory HR systems training course.","estimated_duration":"1 day","category":"it-setup"},
+            {"step":3,"title":"HR Policies & Labor Law Review","description":"Read the HR policy manual, equal opportunity guidelines, and jurisdiction-specific labor law summary.","estimated_duration":"Half day","category":"orientation"},
+            {"step":4,"title":"Shadow Employee Relations Cases","description":"Sit in on anonymised ER case reviews with a senior HR partner to understand escalation procedures.","estimated_duration":"2 days","category":"training"},
+            {"step":5,"title":"Benefits & Compensation Briefing","description":"Meet with the Compensation & Benefits team to understand the company's total rewards framework.","estimated_duration":"2 hours","category":"orientation"},
+            {"step":6,"title":"Meet HR Business Partners & Legal","description":"Introduction sessions with HRBP leads, employment legal counsel, and the payroll team.","estimated_duration":"Half day","category":"social"},
+        ],
+        "product manager": [
+            {"step":1,"title":"HR Paperwork & Confidentiality Agreement","description":"Complete employment documents and sign the product confidentiality and IP agreement.","estimated_duration":"2 hours","category":"compliance"},
+            {"step":2,"title":"Tool Access Setup","description":"Get provisioned in Jira, Confluence, Figma, analytics dashboards, and the product roadmap tool.","estimated_duration":"Half day","category":"it-setup"},
+            {"step":3,"title":"Product Strategy & Roadmap Briefing","description":"Attend a deep-dive with the VP of Product to understand the product vision, current OKRs, and 12-month roadmap.","estimated_duration":"Half day","category":"orientation"},
+            {"step":4,"title":"Customer & Market Research Review","description":"Study the latest customer research reports, NPS data, and competitive analysis documents.","estimated_duration":"1 day","category":"training"},
+            {"step":5,"title":"Cross-Functional Stakeholder Intros","description":"Schedule 30-minute introductions with Engineering leads, Design, Sales, Marketing, and Customer Success.","estimated_duration":"2 days","category":"social"},
+            {"step":6,"title":"Shadow a Sprint & Customer Call","description":"Attend one full sprint ceremony and one customer discovery call before taking ownership of any features.","estimated_duration":"1 week","category":"training"},
+        ],
+        "sales representative": [
+            {"step":1,"title":"HR Paperwork & Commission Agreement","description":"Sign employment contract, commission structure agreement, and CRM data usage policy.","estimated_duration":"2 hours","category":"compliance"},
+            {"step":2,"title":"CRM & Sales Tool Setup","description":"Get access to Salesforce/HubSpot, LinkedIn Sales Navigator, email sequencing tool, and demo environments.","estimated_duration":"Half day","category":"it-setup"},
+            {"step":3,"title":"Product & Pricing Deep Dive","description":"Attend the product training bootcamp covering features, pricing tiers, competitive differentiators, and common objections.","estimated_duration":"2 days","category":"training"},
+            {"step":4,"title":"Shadow Senior Sales Calls","description":"Join 5 live customer calls with a senior AE before making independent outreach.","estimated_duration":"1 week","category":"training"},
+            {"step":5,"title":"Territory & Pipeline Review","description":"Meet with your sales manager to understand your assigned territory, quota, and inherited pipeline.","estimated_duration":"2 hours","category":"orientation"},
+            {"step":6,"title":"Meet Sales, Marketing & CS Teams","description":"Introductions with SDRs, Marketing for lead gen alignment, and Customer Success for handoff processes.","estimated_duration":"Half day","category":"social"},
+        ],
+        "team manager": [
+            {"step":1,"title":"HR, Legal & Management Agreements","description":"Complete employment documents, sign management accountability agreement, and review leadership code of conduct.","estimated_duration":"2 hours","category":"compliance"},
+            {"step":2,"title":"People Systems Access","description":"Get provisioned in Workday Manager Self-Service, performance management platform, and budget planning tool.","estimated_duration":"Half day","category":"it-setup"},
+            {"step":3,"title":"Team Introduction & 1-on-1s","description":"Hold individual 30-minute introduction meetings with every direct report within your first week.","estimated_duration":"1 week","category":"social"},
+            {"step":4,"title":"Management Training Programme","description":"Complete the mandatory people management, feedback delivery, and anti-harassment training modules.","estimated_duration":"1 day","category":"compliance"},
+            {"step":5,"title":"Review Team OKRs & Performance Data","description":"Study the team's current objectives, last-quarter performance reviews, and any open PIPs or promotions.","estimated_duration":"Half day","category":"orientation"},
+            {"step":6,"title":"Senior Leadership & Peer Manager Intros","description":"Meet with your VP, HR Business Partner, and peer managers to align on expectations and team dependencies.","estimated_duration":"Half day","category":"social"},
+        ],
+        "new employee": [
+            {"step":1,"title":"Complete HR Paperwork","description":"Fill out tax forms, NDAs, and employment contracts with the HR team.","estimated_duration":"2 hours","category":"compliance"},
+            {"step":2,"title":"IT Account Setup","description":"Work with IT to provision your laptop, email, VPN, and access credentials.","estimated_duration":"1 day","category":"it-setup"},
+            {"step":3,"title":"Attend New-Hire Orientation","description":"Join the company-wide orientation session covering culture, values, benefits, and key policies.","estimated_duration":"Half day","category":"orientation"},
+            {"step":4,"title":"Mandatory Cybersecurity Training","description":"Complete the online cybersecurity awareness course on the LMS portal within your first week.","estimated_duration":"1 hour","category":"compliance"},
+            {"step":5,"title":"Read the Employee Handbook","description":"Review company policies, code of conduct, expense policy, and benefits information.","estimated_duration":"3 hours","category":"orientation"},
+            {"step":6,"title":"Meet Your Team","description":"Attend the new-hire introduction session and schedule 1-on-1s with your manager and key stakeholders.","estimated_duration":"Half day","category":"social"},
+        ],
+    }
+
     def _mock_response(self, prompt: str) -> str:
-        """Return a canned response when no LLM is available."""
+        """Return a role-specific canned response when no LLM is available."""
         if "JSON workflow" in prompt or "generate_workflow" in prompt:
-            return json.dumps(
-                [
-                    {
-                        "step": 1,
-                        "title": "Complete HR Paperwork",
-                        "description": "Fill out tax forms, NDAs, and employment contracts with the HR team.",
-                        "estimated_duration": "2 hours",
-                        "category": "compliance",
-                    },
-                    {
-                        "step": 2,
-                        "title": "IT Account Setup",
-                        "description": "Work with IT to provision your laptop, email, and access credentials.",
-                        "estimated_duration": "1 day",
-                        "category": "it-setup",
-                    },
-                    {
-                        "step": 3,
-                        "title": "Read the Employee Handbook",
-                        "description": "Review company policies, code of conduct, and benefits information.",
-                        "estimated_duration": "3 hours",
-                        "category": "orientation",
-                    },
-                    {
-                        "step": 4,
-                        "title": "Mandatory Cybersecurity Training",
-                        "description": "Complete the online cybersecurity awareness course on the LMS portal.",
-                        "estimated_duration": "1 hour",
-                        "category": "compliance",
-                    },
-                    {
-                        "step": 5,
-                        "title": "Meet Your Team",
-                        "description": "Attend the new-hire introduction session and schedule 1-on-1s with key stakeholders.",
-                        "estimated_duration": "Half day",
-                        "category": "social",
-                    },
-                ]
-            )
+            # Extract role from prompt to return role-specific steps
+            role_key = "new employee"
+            prompt_lower = prompt.lower()
+            for key in self._MOCK_WORKFLOWS:
+                if key in prompt_lower:
+                    role_key = key
+                    break
+            return json.dumps(self._MOCK_WORKFLOWS[role_key])
 
         if "summarize" in prompt.lower():
             return (

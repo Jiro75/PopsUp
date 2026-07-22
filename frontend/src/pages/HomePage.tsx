@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-<<<<<<< HEAD
 import {
   Upload,
   MessageSquare,
@@ -14,10 +13,6 @@ import {
 } from 'lucide-react'
 import StatusBadge from '@/components/StatusBadge'
 
-// ── Static data ───────────────────────────────────────────────────────────────
-=======
-import { Upload, MessageSquare, GitBranch, ArrowRight, Zap, Shield } from 'lucide-react'
->>>>>>> 026de5ee (workflow page)
 
 const features = [
   {

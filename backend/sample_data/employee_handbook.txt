@@ -1,164 +1,195 @@
-MERIDIAN TECHNOLOGIES INC.
-EMPLOYEE HANDBOOK — HUMAN RESOURCES POLICIES & PROCEDURES
-Effective Date: January 1, 2025
-Version: 4.2
+ACME CORPORATION — EMPLOYEE HANDBOOK 2024
+==========================================
 
-This handbook applies to all full-time, part-time, and contract employees of Meridian Technologies Inc. ("the Company"). Policies are subject to revision; the most current version is always available on the internal HR portal at hr.meridian.internal.
+Welcome to ACME Corporation. This handbook outlines the policies, procedures,
+and expectations that govern your employment. Please read it carefully and
+retain it for future reference.
 
-────────────────────────────────────────────────────────────
+
 SECTION 1: ONBOARDING CHECKLIST
-────────────────────────────────────────────────────────────
+---------------------------------
 
-All new hires must complete the following checklist within their first 10 business days. Your assigned HR Business Partner (HRBP) will track your progress and send reminders at the 5-day mark if items remain outstanding.
+All new employees must complete the following steps within their first 30 days:
 
-DAY 1 — Administrative Setup
-  [ ] Sign and return your offer letter and employment agreement
-  [ ] Complete Form I-9 identity and work authorization verification
-  [ ] Submit direct deposit banking information via the Payroll Portal
-  [ ] Receive and activate your company-issued laptop and access badge
-  [ ] Attend New Employee Orientation (NEO) session — 9:00 AM, Room 204 or virtual link
-  [ ] Meet with your direct manager for a 30-minute welcome check-in
-  [ ] Review and acknowledge the Employee Code of Conduct
+1.  Submit signed employment contract, NDA, and tax withholding forms to HR
+    within 24 hours of your start date.
 
-WEEK 1 — System Access & Compliance
-  [ ] Activate your company email account (firstname.lastname@meridian.com)
-  [ ] Enroll in Multi-Factor Authentication (MFA) via the IT Self-Service Portal
-  [ ] Complete mandatory Information Security Awareness training (approx. 45 min)
-  [ ] Complete Anti-Harassment and Workplace Conduct training module
-  [ ] Review the Data Classification and Handling Policy (HR-POL-014)
-  [ ] Schedule introductory 1:1 meetings with key team members
+2.  Complete the mandatory Cybersecurity Awareness training course on the LMS
+    portal within your first week. Failure to complete this course within
+    30 days will result in system access suspension.
 
-DAYS 6–10 — Role Integration
-  [ ] Complete department-specific onboarding training with your team lead
-  [ ] Gain access to all required software tools (see IT Setup section below)
-  [ ] Review your 30-60-90 day performance expectations with your manager
-  [ ] Enroll in health, dental, and vision benefits (deadline: Day 10)
-  [ ] Submit completed Emergency Contact form to HR
+3.  Set up corporate email, Slack, and VPN access with the IT Help Desk.
+    Submit an IT provisioning ticket at helpdesk.acme.com on Day 1.
 
-────────────────────────────────────────────────────────────
+4.  Attend the New-Hire Orientation session held every first Monday of the month
+    in Conference Room A or via Zoom. Attendance is mandatory.
+
+5.  Schedule a 1-on-1 introductory meeting with your direct manager within
+    the first week. Discuss role expectations, 30/60/90-day goals, and team norms.
+
+6.  Review and sign the Code of Conduct, Conflict of Interest Policy, and
+    Acceptable Use Policy. Return signed copies to HR by end of Week 1.
+
+7.  Complete the Benefits Enrollment form within 30 days of hire. Late
+    enrollment forfeits coverage until the next open enrollment period.
+
+8.  Obtain your building access badge from Security on Day 1. Badge requests
+    require manager approval submitted via the facilities portal.
+
+
 SECTION 2: REMOTE WORK POLICY
-────────────────────────────────────────────────────────────
+--------------------------------
 
-2.1 Eligibility
-Remote and hybrid work arrangements are available to employees whose roles do not require continuous on-site presence. Eligibility is determined by the employee's manager in consultation with HR. Employees must have completed their first 60 days of employment before requesting a formal remote arrangement.
+ACME supports flexible work arrangements subject to the following conditions:
 
-2.2 Hybrid Schedule
-The Company operates on a hybrid-first model. Most roles are expected to be in the office a minimum of two (2) days per week, typically Tuesday and Thursday, unless otherwise agreed with the department head. Specific teams (e.g., Customer Support, Infrastructure Operations) may have different in-office requirements based on operational needs.
+- Employees may work remotely up to 3 days per week with written manager approval.
+- A corporate-issued VPN must be active whenever accessing company systems remotely.
+- Employees must maintain a secure, distraction-free home workspace.
+- Remote workers must be reachable during core hours: 10:00 AM – 4:00 PM local time.
+- Any remote work arrangement may be revoked by management with 48-hour notice.
+- International remote work requires prior approval from HR and Legal due to
+  tax and employment law implications.
 
-2.3 Remote Work Expectations
-Employees working remotely are expected to:
-  - Maintain their standard working hours as agreed with their manager
-  - Be reachable via Slack and email within 15 minutes during core hours (10:00 AM – 3:00 PM local time)
-  - Participate in all scheduled video calls with camera enabled unless a technical issue is documented
-  - Ensure their home workspace is private, adequately lit, and free from disruptive background noise during client-facing calls
-  - Never conduct company business from public Wi-Fi without an active VPN connection
 
-2.4 Equipment and Expenses
-The Company provides each remote-eligible employee with:
-  - One company-issued laptop
-  - A one-time home office setup stipend of $400 (claimed within 90 days of approval)
-  - Monthly internet subsidy of $40, reimbursed via the expense portal
+SECTION 3: IT SETUP AND ACCOUNT PROVISIONING
+----------------------------------------------
 
-Personal equipment may not be used to process, store, or transmit company data unless formally approved through an IT exception request.
+Day 1 IT Checklist:
+- Laptop pickup from IT (pre-configured with endpoint security software)
+- Corporate email account creation (firstname.lastname@acme.com)
+- Multi-Factor Authentication (MFA) enrollment — mandatory for all accounts
+- VPN client installation and credentials
+- Access to internal wikis, project management tools, and communication platforms
+- Role-specific software licences requested via the software portal
 
-2.5 International Remote Work
-Working from outside the employee's country of employment for more than 10 consecutive business days requires prior written approval from HR and Legal. Tax and employment law implications vary by jurisdiction and will be assessed on a case-by-case basis. Unapproved international remote work may result in disciplinary action.
+All employees must:
+- Never share passwords or access credentials with colleagues.
+- Lock workstations when leaving your desk (Win+L / Cmd+Ctrl+Q).
+- Report lost or stolen devices to IT Security within 1 hour.
+- Use only approved cloud storage solutions (SharePoint, OneDrive).
+  Personal cloud storage (Google Drive, Dropbox) is prohibited for work files.
 
-────────────────────────────────────────────────────────────
-SECTION 3: IT SETUP AND ACCEPTABLE USE
-────────────────────────────────────────────────────────────
 
-3.1 Standard Software Stack
-All employees are provisioned with the following standard tools on their company laptop:
-  - Operating System: macOS 14 (Sonoma) or Windows 11 Enterprise
-  - Email & Calendar: Microsoft Outlook (Microsoft 365 Business Premium)
-  - Collaboration: Microsoft Teams and Slack (Enterprise Grid)
-  - Document Management: Microsoft SharePoint and OneDrive for Business
-  - Password Manager: 1Password Business (mandatory use for all work credentials)
-  - VPN Client: Cisco Secure Client — required when working off corporate network
-  - Endpoint Protection: CrowdStrike Falcon (auto-installed, must not be disabled)
+SECTION 4: COMPLIANCE AND MANDATORY TRAINING
+----------------------------------------------
 
-3.2 Software Requests
-Requests for software not included in the standard stack must be submitted through the IT Service Desk portal. Requests are reviewed for security and license compliance within 5 business days. Employees must not install unapproved software on company devices.
+The following training courses are mandatory for all employees:
 
-3.3 Password and Authentication Policy
-  - All passwords must be a minimum of 14 characters and include uppercase, lowercase, numeric, and special characters
-  - Passwords must be changed every 180 days
-  - Multi-Factor Authentication (MFA) is mandatory for all company systems
-  - Sharing credentials with any other person, including colleagues, is strictly prohibited
+1. Cybersecurity Awareness Training          — Due: Within 7 days of start date
+2. Anti-Harassment and Workplace Conduct     — Due: Within 30 days of start date
+3. Data Privacy and GDPR Fundamentals        — Due: Within 30 days of start date
+4. Code of Business Conduct and Ethics       — Due: Within 30 days of start date
+5. Health and Safety Induction               — Due: Within 14 days of start date
 
-3.4 Acceptable Use
-Company-provided technology is intended for business purposes. Incidental personal use is permitted provided it does not interfere with work duties or violate any provision of this policy. The following are strictly prohibited:
-  - Accessing, storing, or distributing illegal content
-  - Installing or running cryptocurrency mining software
-  - Disabling or attempting to bypass endpoint security tools
-  - Connecting company devices to unsecured or public networks without VPN
-  - Using company email accounts to register for non-business services
+Role-specific training (assigned by manager):
+- Secure Software Development Lifecycle (Engineering roles)
+- Data Governance and Responsible AI (Data and Analytics roles)
+- Financial Controls and SOX Compliance (Finance roles)
+- Employment Law Refresher (HR and Legal roles)
 
-3.5 Device Loss or Theft
-Any lost or stolen company device must be reported to IT Security within two (2) hours of discovery by calling the IT Security Hotline at ext. 5500 or emailing itsecurity@meridian.com. Remote wipe will be initiated immediately.
+All training is hosted on the LMS portal at learn.acme.com. Completion records
+are audited quarterly. Non-compliance may result in disciplinary action.
 
-────────────────────────────────────────────────────────────
-SECTION 4: COMPLIANCE AND CODE OF CONDUCT
-────────────────────────────────────────────────────────────
 
-4.1 Equal Employment Opportunity
-Meridian Technologies is an equal opportunity employer. The Company does not discriminate on the basis of race, color, religion, sex, national origin, age, disability, veteran status, sexual orientation, gender identity, or any other characteristic protected by applicable law.
+SECTION 5: BENEFITS AND COMPENSATION
+----------------------------------------
 
-4.2 Anti-Harassment Policy
-The Company maintains a zero-tolerance policy for harassment, including sexual harassment, bullying, and retaliation. Any employee who believes they have experienced or witnessed harassment must report it to HR at hr@meridian.com or through the anonymous Ethics Hotline at ethics.meridian.internal. All reports are investigated promptly and confidentially.
+Health & Wellness:
+- Medical, dental, and vision coverage effective from Day 1 of employment.
+- Employee contributes 15% of premium; ACME covers 85%.
+- Annual wellness allowance of $500 for gym memberships or fitness equipment.
+- Employee Assistance Programme (EAP) providing free confidential counselling.
 
-4.3 Conflicts of Interest
-Employees must disclose any actual or potential conflict of interest to their manager and HR in writing. This includes, but is not limited to, financial interests in competitor companies, employment of family members in roles that create a reporting relationship, and outside consulting engagements. Disclosure forms are available on the HR portal.
+Paid Time Off (PTO):
+- 0–2 years of service:    15 days PTO per year
+- 2–5 years of service:    20 days PTO per year
+- 5+ years of service:     25 days PTO per year
+- PTO accrues monthly and can be carried over up to a maximum of 10 days.
+- Public holidays: 11 federal holidays observed per year.
 
-4.4 Confidentiality and Data Protection
-All employees handle confidential business information and must comply with the Company's Data Classification Policy (HR-POL-014). Confidential information must not be shared with external parties without a signed Non-Disclosure Agreement approved by Legal. Employees are required to complete annual data privacy training as mandated by applicable regulations including GDPR and CCPA.
+Parental Leave:
+- Primary caregiver: 16 weeks paid parental leave
+- Secondary caregiver: 6 weeks paid parental leave
+- Adoption and foster care: same entitlements as birth parents
 
-4.5 Mandatory Training Schedule
-The following compliance trainings are required annually for all employees:
-  - Information Security Awareness (due each January)
-  - Anti-Harassment and Workplace Conduct (due each March)
-  - Data Privacy and GDPR Fundamentals (due each June)
-  - Anti-Bribery and Corruption (due each September)
+Retirement:
+- 401(k) plan with company match of up to 4% of base salary.
+- Vesting schedule: 25% per year over 4 years.
+- Financial planning sessions available twice per year at no cost.
 
-Failure to complete mandatory training by the stated deadline may result in suspension of system access until the training is finished.
 
-────────────────────────────────────────────────────────────
-SECTION 5: EMPLOYEE BENEFITS SUMMARY
-────────────────────────────────────────────────────────────
+SECTION 6: PERFORMANCE MANAGEMENT
+-------------------------------------
 
-5.1 Health and Wellness
-  - Medical Insurance: The Company covers 85% of employee premiums and 70% for eligible dependents. Three plan tiers are available (Standard, Enhanced, Premier) through BlueCross BlueShield.
-  - Dental and Vision: Covered at 80% for employees and 60% for dependents through MetLife.
-  - Employee Assistance Program (EAP): Free, confidential counseling and support services — up to 8 sessions per year through LifeWorks.
-  - Wellness Stipend: $600 per calendar year for gym memberships, fitness apps, or wellness-related expenses, reimbursed via the expense portal.
+ACME uses a continuous performance management model:
 
-5.2 Retirement
-  - 401(k) Plan: Employees are eligible to contribute immediately upon hire. The Company provides a matching contribution of 100% on the first 4% of eligible compensation deferred, with vesting after 2 years of service.
+- Monthly 1-on-1 check-ins between employee and manager (mandatory).
+- Mid-year review in June: progress against goals, development discussion.
+- Annual review in December: performance rating, compensation review, promotion consideration.
 
-5.3 Paid Time Off
-  - Vacation: 15 days per year for employees with 0–3 years of service; 20 days for 3–7 years; 25 days for 7+ years.
-  - Sick Leave: 10 days per year, non-accruing, non-transferable.
-  - Holidays: 11 company-observed federal holidays plus 2 floating personal holidays.
-  - Parental Leave: 16 weeks paid leave for primary caregivers and 6 weeks for secondary caregivers, available after 6 months of employment.
-  - Bereavement Leave: 5 days for immediate family; 2 days for extended family.
+Performance ratings:
+  Exceptional  — Significantly exceeds all expectations
+  Strong       — Consistently meets and often exceeds expectations
+  Developing   — Meets most expectations; improvement plan may apply
+  Needs Improvement — Does not meet expectations; formal PIP initiated
 
-5.4 Learning and Development
-  - Each employee receives an annual Learning & Development budget of $1,500 for conferences, courses, certifications, or books.
-  - The Company maintains enterprise licenses for LinkedIn Learning and O'Reilly Online Library, available to all employees at no cost.
-  - Tuition reimbursement of up to $5,250 per year is available for degree programs relevant to the employee's role, subject to manager and HR approval.
+Employees who receive a "Needs Improvement" rating twice consecutively may
+be subject to a Performance Improvement Plan (PIP) or separation.
 
-5.5 Additional Perks
-  - Monthly commuter benefit: Pre-tax transit and parking up to $315/month
-  - Company-wide volunteer day: 1 paid day per year for approved community service
-  - Employee referral bonus: $2,000 (paid 90 days after successful hire)
-  - Annual performance bonus: Target 10–20% of base salary, based on individual and company performance
 
-────────────────────────────────────────────────────────────
+SECTION 7: CODE OF CONDUCT
+-----------------------------
 
-For questions regarding any policy in this handbook, contact your HR Business Partner or email hr@meridian.com.
+All employees are expected to:
+- Treat colleagues, clients, and partners with dignity and respect.
+- Maintain confidentiality of proprietary information at all times.
+- Avoid conflicts of interest; disclose any potential conflicts to Legal immediately.
+- Never engage in bribery, corruption, or facilitation of payments.
+- Report suspected misconduct via the anonymous Ethics Hotline: 1-800-555-ETHICS.
 
-Meridian Technologies Inc. | 500 Innovation Parkway, Suite 1200, Austin, TX 78701
-Internal HR Portal: hr.meridian.internal | Ethics Hotline: ethics.meridian.internal
+Violations of the Code of Conduct may result in immediate termination and,
+where applicable, referral to law enforcement authorities.
 
-© 2025 Meridian Technologies Inc. All rights reserved. This document is confidential and intended for internal use only.
+
+SECTION 8: ROLE-SPECIFIC ONBOARDING — ENGINEERING
+----------------------------------------------------
+
+In addition to the general onboarding checklist, Software Engineers and
+Data Scientists must complete the following:
+
+- Development environment setup guide (available on the Engineering Wiki)
+- Code review participation in at least two PRs during the first two weeks
+- Architecture overview session with Tech Lead (scheduled by manager)
+- Access request to production systems requires two senior engineer approvals
+- Completion of the Secure SDLC training before any production deployments
+- Familiarity with the incident response runbook in the on-call documentation
+
+
+SECTION 9: ROLE-SPECIFIC ONBOARDING — HUMAN RESOURCES
+--------------------------------------------------------
+
+HR team members must additionally complete:
+
+- HRIS system access (Workday) — training session scheduled by HR Operations
+- Review of all active Employee Relations cases within the first two weeks
+- Meeting with each HR Business Partner to understand portfolio responsibilities
+- Completion of Employment Law and Anti-Discrimination refresher training
+- Understanding of payroll cutoff dates and the compensation review calendar
+
+
+SECTION 10: CONTACT DIRECTORY
+--------------------------------
+
+HR Helpdesk:          hr@acme.com           | +1 (555) 010-0100
+IT Help Desk:         helpdesk@acme.com     | +1 (555) 010-0200
+Legal & Compliance:   legal@acme.com        | +1 (555) 010-0300
+Facilities:           facilities@acme.com   | +1 (555) 010-0400
+Ethics Hotline:       1-800-555-ETHICS      | Anonymous, 24/7
+Emergency:            security@acme.com     | +1 (555) 010-9999
+
+
+---
+This handbook was last updated: January 2024
+All policies are subject to change. Employees will be notified of material
+changes via email with at least 14 days notice.
+ACME Corporation — Building Tomorrow Together

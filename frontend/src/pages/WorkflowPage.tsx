@@ -6,43 +6,48 @@ import WorkflowExportButton from '@/components/WorkflowExportButton'
 import { useWorkflow } from '@/hooks/useWorkflow'
 import { cn } from '@/lib/utils'
 
-const ROLES = [
-  'New Employee',
-  'Software Engineer',
-  'Product Manager',
-  'Sales Representative',
-  'HR Specialist',
-  'Team Manager',
-  'Data Scientist',
-]
+// ── Role → compatible departments ────────────────────────────────────────────
+const ROLE_DEPARTMENTS: Record<string, string[]> = {
+  'New Employee':         ['', 'Engineering', 'Product', 'Sales', 'Human Resources', 'Finance', 'Marketing', 'Legal'],
+  'Software Engineer':    ['', 'Engineering', 'Product'],
+  'Data Scientist':       ['', 'Engineering', 'Product', 'Finance', 'Marketing'],
+  'Product Manager':      ['', 'Product', 'Engineering', 'Marketing'],
+  'Sales Representative': ['', 'Sales', 'Marketing'],
+  'HR Specialist':        ['', 'Human Resources', 'Legal', 'Finance'],
+  'Team Manager':         ['', 'Engineering', 'Product', 'Sales', 'Human Resources', 'Finance', 'Marketing', 'Legal'],
+}
 
-const DEPARTMENTS = [
-  '',
-  'Engineering',
-  'Product',
-  'Sales',
-  'Human Resources',
-  'Finance',
-  'Marketing',
-  'Legal',
-]
+const ROLES = Object.keys(ROLE_DEPARTMENTS)
 
+const DEPT_LABEL: Record<string, string> = {
+  '':                '— Any department —',
+  'Engineering':     'Engineering',
+  'Product':         'Product',
+  'Sales':           'Sales',
+  'Human Resources': 'Human Resources',
+  'Finance':         'Finance',
+  'Marketing':       'Marketing',
+  'Legal':           'Legal',
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
 export default function WorkflowPage() {
-  const [role, setRole] = useState('New Employee')
+  const [role, setRole]           = useState('New Employee')
   const [department, setDepartment] = useState('')
   const [hasDocuments, setHasDocuments] = useState(true)
+
   const { steps, role: workflowRole, loading, error, generate, updateStatus } = useWorkflow()
 
-  // Auto-generate on mount with the default role
+  // Departments available for the currently selected role
+  const availableDepts = ROLE_DEPARTMENTS[role] ?? ['']
+
+  // Auto-generate on mount
   useEffect(() => {
-    generate(role, department || undefined).catch(() => {
-      // If the initial generate fails with a "no docs" style error, surface the banner
-      setHasDocuments(false)
-    })
+    generate('New Employee', undefined).catch(() => setHasDocuments(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Detect "no documents" condition from error message
+  // Surface "no documents" banner when the error looks like an empty-context error
   useEffect(() => {
     if (error) {
       const lower = error.toLowerCase()
@@ -57,20 +62,26 @@ export default function WorkflowPage() {
     }
   }, [error])
 
+  const handleRoleChange = (newRole: string) => {
+    setRole(newRole)
+    const depts = ROLE_DEPARTMENTS[newRole] ?? ['']
+    if (!depts.includes(department)) setDepartment('')
+  }
+
   const handleGenerate = () => {
     setHasDocuments(true)
     generate(role, department || undefined)
   }
 
-  const approvedCount = steps.filter((s) => s.status === 'approved').length
+  const approvedCount  = steps.filter((s) => s.status === 'approved').length
   const completedCount = steps.filter((s) => s.status === 'completed').length
-  const rejectedCount = steps.filter((s) => s.status === 'rejected').length
-  const actionedCount = approvedCount + completedCount
-  const progress =
-    steps.length > 0 ? Math.round((actionedCount / steps.length) * 100) : 0
+  const rejectedCount  = steps.filter((s) => s.status === 'rejected').length
+  const actionedCount  = approvedCount + completedCount
+  const progress       = steps.length > 0 ? Math.round((actionedCount / steps.length) * 100) : 0
 
   return (
     <div className="px-8 py-8 max-w-3xl mx-auto space-y-6">
+
       {/* Page header */}
       <div>
         <div className="flex items-center gap-2 mb-1">
@@ -83,12 +94,12 @@ export default function WorkflowPage() {
         </p>
       </div>
 
-      {/* Warning banner — shown when no documents are ingested */}
+      {/* No-documents banner */}
       {!hasDocuments && (
         <div className="flex items-start gap-3 rounded-lg border border-yellow-300 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
           <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-yellow-500" />
           <span>
-            No HR documents have been ingested yet. Workflow quality will be limited.{' '}
+            No HR documents ingested yet — showing demo workflow.{' '}
             <Link to="/upload" className="font-semibold underline hover:text-yellow-900">
               Upload documents →
             </Link>
@@ -99,20 +110,22 @@ export default function WorkflowPage() {
       {/* Generator controls */}
       <div className="rounded-xl bg-white border border-slate-200 shadow-sm p-5 space-y-4">
         <div className="grid sm:grid-cols-2 gap-4">
+
+          {/* Role selector */}
           <div>
             <label className="block text-xs font-semibold text-slate-600 mb-1.5">
               <Users className="inline h-3.5 w-3.5 mr-1" />Role
             </label>
             <select
               value={role}
-              onChange={(e) => setRole(e.target.value)}
+              onChange={(e) => handleRoleChange(e.target.value)}
               className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ibm-500"
             >
-              {ROLES.map((r) => (
-                <option key={r}>{r}</option>
-              ))}
+              {ROLES.map((r) => <option key={r}>{r}</option>)}
             </select>
           </div>
+
+          {/* Department selector — filtered by role */}
           <div>
             <label className="block text-xs font-semibold text-slate-600 mb-1.5">
               Department (optional)
@@ -122,10 +135,8 @@ export default function WorkflowPage() {
               onChange={(e) => setDepartment(e.target.value)}
               className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ibm-500"
             >
-              {DEPARTMENTS.map((d) => (
-                <option key={d} value={d}>
-                  {d || '— Any department —'}
-                </option>
+              {availableDepts.map((d) => (
+                <option key={d} value={d}>{DEPT_LABEL[d] ?? d}</option>
               ))}
             </select>
           </div>
@@ -172,16 +183,12 @@ export default function WorkflowPage() {
             </p>
             <p className="text-xs text-slate-500">{progress}% complete</p>
           </div>
-
-          {/* Progress bar */}
           <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
             <div
               className="h-full rounded-full bg-ibm-500 transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
-
-          {/* Counters */}
           <div className="flex gap-4 text-xs text-slate-500">
             <span className="flex items-center gap-1">
               <span className="h-2 w-2 rounded-full bg-slate-300" />
@@ -212,14 +219,12 @@ export default function WorkflowPage() {
         />
       )}
 
-      {/* Empty state — only show if not loading and no error */}
+      {/* Empty state */}
       {steps.length === 0 && !loading && !error && (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 py-16 text-center">
           <GitBranch className="h-10 w-10 text-slate-300 mb-3" />
           <p className="text-sm font-medium text-slate-500">No workflow generated yet</p>
-          <p className="text-xs text-slate-400 mt-1">
-            Select a role above and click Generate Workflow
-          </p>
+          <p className="text-xs text-slate-400 mt-1">Select a role above and click Generate Workflow</p>
         </div>
       )}
     </div>

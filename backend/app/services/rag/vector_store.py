@@ -137,7 +137,7 @@ def list_document_filenames() -> list[str]:
                 scroll_filter=None,
                 limit=100,
                 offset=offset,
-                with_payload=["source_filename"],
+                with_payload=True,
                 with_vectors=False,
             )
             for record in records:

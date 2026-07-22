@@ -11,9 +11,9 @@ export default function UploadPage() {
   const fetchDocs = async () => {
     try {
       const data = await listDocuments()
-      setDocs(data)
+      setDocs(Array.isArray(data) ? data : [])
     } catch {
-      // Qdrant may be offline in demo mode — silently ignore
+      setDocs([])
     }
   }
 

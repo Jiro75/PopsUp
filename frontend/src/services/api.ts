@@ -60,7 +60,8 @@ export async function generateWorkflow(
 /** List all documents that have been ingested into the vector store. */
 export async function listDocuments(): Promise<DocumentListItem[]> {
   const res = await fetch(`${BASE_URL}/documents`);
-  return handleResponse<DocumentListItem[]>(res);
+  const data = await handleResponse<{ filenames?: string[]; count?: number }>(res);
+  return (data.filenames ?? []).map((filename) => ({ filename, chunks: 0, uploaded_at: undefined }));
 }
 
 /**
